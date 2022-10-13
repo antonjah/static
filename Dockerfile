@@ -10,4 +10,6 @@ FROM scratch
 
 COPY --from=build /go/bin/static /bin/static
 
+EXPOSE 8080
+
 CMD ["/bin/static"]
