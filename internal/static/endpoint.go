@@ -47,6 +47,5 @@ func (e Endpoint) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
 	// write body
 	if _, err := w.Write([]byte(e.Body)); err != nil {
 		log.Error().Err(err).Msg("failed to write response")
-		return
 	}
 }
