@@ -1,22 +1,52 @@
 package static
 
 import (
-	"fmt"
-	"log"
+	"github.com/rs/zerolog/log"
+	"gopkg.in/yaml.v3"
 	"net/http"
-)
-
-var (
-	host         = getEnv("HOST", "")
-	port         = getEnv("PORT", "8080")
-	responseBody = getEnv("RESPONSE", "")
-	contentType  = getEnv("CONTENT_TYPE", "plain/text")
-	bindAddress  = fmt.Sprintf("%s:%s", host, port)
+	"os"
 )
 
 func Run() {
-	log.Println("static is listening on", bindAddress)
-	if err := http.ListenAndServe(bindAddress, handler()); err != nil {
-		log.Fatal(err)
+	// read config
+	config := NewConfig()
+
+	// read endpoints file
+	fh, err := os.Open(config.EndpointsPath)
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to open endpoints file for reading")
+	}
+
+	// decode endpoint(s)
+	var endpoints Endpoints
+	if err = yaml.NewDecoder(fh).Decode(&endpoints); err != nil {
+		log.Fatal().
+			Err(err).
+			Msg("failed to open endpoints file for reading")
+	}
+
+	mux := http.NewServeMux()
+
+	// append endpoint(s)
+	for _, endpoint := range endpoints.Endpoints {
+		if err = endpoint.Validate(); err != nil {
+			log.Fatal().
+				Str("endpoint", endpoint.Path).
+				Err(err).
+				Msg("validation failed")
+		}
+
+		log.Debug().
+			Int("status-code", endpoint.StatusCode).
+			Int("nHeaders", len(endpoint.Headers)).
+			Int("content-length", len(endpoint.Body)).
+			Msgf("appending endpoint %s", endpoint.Path)
+
+		mux.Handle(endpoint.Path, requestLogger(endpoint.StatusCode, endpoint))
+	}
+
+	log.Info().Msgf("static is listening on %s", config.ListenBindAddress)
+	if err = http.ListenAndServe(config.ListenBindAddress, mux); err != nil {
+		log.Fatal().Err(err).Msg("failed to listen and serve")
 	}
 }

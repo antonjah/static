@@ -1,0 +1,13 @@
+endpoints:
+  - path: /example/400
+    status-code: 400
+    body: '{"message": "missing foo in request"}'
+    headers:
+      x-correlation-id: uuid
+  - path: /example/204
+    status-code: 204
+  - path: /example/500
+    status-code: 500
+    body: "something failed"
+    headers:
+      content-type: "text/plain"
