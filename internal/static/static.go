@@ -7,12 +7,6 @@ import (
 	"os"
 )
 
-type defaultHandler struct{}
-
-func (d defaultHandler) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
-	w.WriteHeader(http.StatusNotFound)
-}
-
 func Run() {
 	// read config
 	config := NewConfig()
@@ -51,8 +45,6 @@ func Run() {
 
 		mux.Handle(endpoint.Path, requestLogger(endpoint))
 	}
-
-	mux.Handle("/", requestLogger(defaultHandler{}))
 
 	log.Info().Msgf("static is listening on %s", config.ListenBindAddress)
 	if err = http.ListenAndServe(config.ListenBindAddress, mux); err != nil {
