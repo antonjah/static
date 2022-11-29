@@ -1,3 +1,7 @@
+.PHONY: build
+build: ## Build static
+	@CGO_ENABLED=0 go build -ldflags="-w -s" -o static cmd/static/static.go
+
 .PHONY: test
 test: lint unittest ## Run linting and unittest
 
