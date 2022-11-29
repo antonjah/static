@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/rs/zerolog v1.28.0
+	golang.org/x/exp v0.0.0-20221126150942-6ab00d035af9
 	gopkg.in/yaml.v3 v3.0.1
 )
 

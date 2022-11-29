@@ -7,6 +7,12 @@ import (
 	"os"
 )
 
+type defaultHandler struct{}
+
+func (d defaultHandler) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
+	w.WriteHeader(http.StatusNotFound)
+}
+
 func Run() {
 	// read config
 	config := NewConfig()
@@ -36,14 +42,17 @@ func Run() {
 				Msg("validation failed")
 		}
 
+		// define a list of supported methods
+		endpoint.SetSupported()
+
 		log.Debug().
-			Int("status-code", endpoint.StatusCode).
-			Int("nHeaders", len(endpoint.Headers)).
-			Int("content-length", len(endpoint.Body)).
+			Array("methods", endpoint.SupportedMethods).
 			Msgf("appending endpoint %s", endpoint.Path)
 
-		mux.Handle(endpoint.Path, requestLogger(endpoint.StatusCode, endpoint))
+		mux.Handle(endpoint.Path, requestLogger(endpoint))
 	}
+
+	mux.Handle("/", requestLogger(defaultHandler{}))
 
 	log.Info().Msgf("static is listening on %s", config.ListenBindAddress)
 	if err = http.ListenAndServe(config.ListenBindAddress, mux); err != nil {

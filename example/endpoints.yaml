@@ -1,13 +1,19 @@
 endpoints:
-  - path: /example/400
-    status-code: 400
-    body: '{"message": "missing foo in request"}'
-    headers:
-      x-correlation-id: uuid
-  - path: /example/204
-    status-code: 204
-  - path: /example/500
-    status-code: 500
-    body: "something failed"
-    headers:
-      content-type: "text/plain"
+  - path: /path1
+    methods:
+      - method: "GET"
+        status-code: 200
+        body: "some string"
+        headers:
+          content-type: "text/plain"
+      - method: "POST"
+        status-code: 200
+        body: '{"json": "body"}'
+        headers:
+          content-type: "application/json"
+      - method: "PUT"
+        status-code: 204
+  - path: /path1/subpath1
+    methods:
+      - method: "DELETE"
+        status-code: 202
