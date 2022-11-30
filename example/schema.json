@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "endpoints": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "methods": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "method": {
+                      "type": "string"
+                    },
+                    "status-code": {
+                      "type": "integer"
+                    },
+                    "body": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "method",
+                    "status-code"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "path",
+            "methods"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "endpoints"
+  ]
+}
