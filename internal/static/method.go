@@ -2,7 +2,6 @@ package static
 
 import (
 	"github.com/rs/zerolog"
-	"strings"
 )
 
 // Method for a specific endpoint
@@ -18,5 +17,7 @@ type SupportedMethods []string
 
 // MarshalZerologArray implements zerolog.LogArrayMarshaler
 func (s SupportedMethods) MarshalZerologArray(a *zerolog.Array) {
-	a.Str(strings.Join(s, ", "))
+	for _, method := range s {
+		a.Str(method)
+	}
 }
