@@ -1,3 +1,8 @@
+BASE_IMAGE_NAME := "antonjah/static"
+DEV_IMAGE_TAG := "dev"
+LATEST_IMAGE_TAG := "latest"
+LATEST_GIT_TAG := $(shell git describe --tags `git rev-list --tags --max-count=1`)
+
 .PHONY: build
 build: ## Build static
 	@CGO_ENABLED=0 go build -ldflags="-w -s" -o static cmd/static/static.go
@@ -16,7 +21,15 @@ lint: ## Run linting
 
 .PHONY: buildimage
 buildimage: ## Build docker image
-	docker build -t antonjah/static:dev .
+	@docker build --quiet -t "${BASE_IMAGE_NAME}:${DEV_IMAGE_TAG}" .
+	@echo built "${BASE_IMAGE_NAME}:${DEV_IMAGE_TAG}"
+
+.PHONY: tagimage
+tagimage: buildimage ## Tag the docker image
+	@docker tag "${BASE_IMAGE_NAME}:${DEV_IMAGE_TAG}" "${BASE_IMAGE_NAME}:${LATEST_GIT_TAG}"
+	@docker tag "${BASE_IMAGE_NAME}:${DEV_IMAGE_TAG}" "${BASE_IMAGE_NAME}:${LATEST_IMAGE_TAG}"
+	@echo tagged "${BASE_IMAGE_NAME}:${LATEST_GIT_TAG}"
+	@echo tagged "${BASE_IMAGE_NAME}:${LATEST_IMAGE_TAG}"
 
 .PHONY: help
 help: ## Show help
