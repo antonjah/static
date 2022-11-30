@@ -17,8 +17,7 @@ A simple HTTP server that serves static responses
 Configuring static endpoints is done with a yaml file.  
 An example can be found [here](example/endpoints.yaml)
 
-There is also a JSON schema provided [here](example/schema.json) that can be used to  
-validate the configuration and provide intellisense if the [yaml plugin](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml) is installed.
+There is also a JSON schema provided [here](example/schema.json) that can be used to validate the configuration.
 
 A very basic example with one path and one method:
 
