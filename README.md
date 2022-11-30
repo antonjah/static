@@ -1,3 +1,7 @@
+![Docker Pulls](https://img.shields.io/docker/pulls/antonjah/static?style=flat-square&logo=appveyor)
+![Docker Image Size (tag)](https://img.shields.io/docker/image-size/antonjah/static/latest?style=flat-square&logo=appveyor)
+
+
 # static
 
 A simple HTTP server that serves static responses
