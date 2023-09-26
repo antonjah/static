@@ -1,3 +1,4 @@
+[![ci](https://github.com/antonjah/static/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/antonjah/static/actions/workflows/main.yml)
 ![Docker Pulls](https://img.shields.io/docker/pulls/antonjah/static?style=flat-square&logo=appveyor)
 ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/antonjah/static/latest?style=flat-square&logo=appveyor)
 
