@@ -1,8 +1,9 @@
 package static
 
 import (
-	"github.com/rs/zerolog/log"
 	"net/http"
+
+	"github.com/rs/zerolog/log"
 )
 
 func requestLogger(next http.Handler) http.Handler {

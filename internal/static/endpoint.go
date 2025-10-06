@@ -3,10 +3,11 @@ package static
 import (
 	"errors"
 	"fmt"
-	"github.com/rs/zerolog/log"
-	"golang.org/x/exp/slices"
 	"net/http"
 	"strings"
+
+	"github.com/rs/zerolog/log"
+	"golang.org/x/exp/slices"
 )
 
 // Endpoints represents one or more Endpoint that is appended to the listener
@@ -23,7 +24,7 @@ type Endpoint struct {
 }
 
 // MethodFromRequest is a helper function to get the method dynamically from a request
-func (e Endpoint) MethodFromRequest(req *http.Request) Method {
+func (e *Endpoint) MethodFromRequest(req *http.Request) Method {
 	for _, method := range e.Methods {
 		if strings.Compare(strings.ToLower(method.Method), strings.ToLower(req.Method)) == 0 {
 			return method
@@ -41,7 +42,7 @@ func (e *Endpoint) SetSupported() {
 }
 
 // Validate makes sure that the required fields are set for a specific Endpoint
-func (e Endpoint) Validate() error {
+func (e *Endpoint) Validate() error {
 	// validate path
 	if e.Path == "" {
 		return errors.New("missing path")
@@ -59,9 +60,9 @@ func (e Endpoint) Validate() error {
 
 // ServeHTTP responds to an HTTP request using the pre-configured
 // content-type, body, and headers
-func (e Endpoint) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+func (e *Endpoint) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	// make sure the HTTP method is supported
-	if !slices.Contains[string](e.SupportedMethods, req.Method) {
+	if !slices.Contains(e.SupportedMethods, req.Method) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
