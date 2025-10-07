@@ -9,13 +9,18 @@ A simple HTTP server that serves static responses
 
 ## configuration
 
-| parameter      | default   | description                                                               |
-|:---------------|:----------|:--------------------------------------------------------------------------|
-| HOSTNAME       | 127.0.0.1 | Bind hostname                                                             |
-| PORT           | 8080      | Bind port                                                                 |
-| LOG_LEVEL      | info      | Zerolog log level                                                         |
-| LOG_PRETTY     | false     | Turn on to prettify logs (standard is JSON)                               |
-| ENDPOINTS_PATH | $PWD      | Path to the endpoints configuration file (defaults to current directory)  |
+| parameter         | default   | description                                                               |
+|:------------------|:----------|:--------------------------------------------------------------------------|
+| HOSTNAME          | 127.0.0.1 | Bind hostname                                                             |
+| PORT              | 8080      | Bind port                                                                 |
+| LOG_LEVEL         | info      | Zerolog log level                                                         |
+| LOG_PRETTY        | false     | Turn on to prettify logs (standard is JSON)                               |
+| ENDPOINTS_PATH    | $PWD      | Path to the endpoints configuration file (defaults to current directory)  |
+| TLS_ENABLED       | false     | Enable TLS                                                                |
+| TLS_CERTIFICATE   |           | Path to TLS certificate (required if TLS_ENABLED is true)                 |
+| TLS_KEY           |           | Path to TLS key (required if TLS_ENABLED is true)                         |
+| TLS_CA            |           | Path to TLS CA                                                            |
+| TLS_VERIFY_CLIENT | false     | Enable client certificate verification (requires TLS_CA)                  |
 
 ## endpoints configuration
 
