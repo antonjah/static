@@ -1,0 +1,13 @@
+services:
+  static:
+    ports:
+      - "8080:8080"
+    environment:
+      LOG_LEVEL: debug
+      LOG_PRETTY: "true"
+      STATICAPIS_PATH: /config
+    build:
+      context: ..
+      dockerfile: deployments/docker/Dockerfile.static
+    volumes:
+      - ../examples/staticapis.yaml:/config/staticapis.yaml:ro

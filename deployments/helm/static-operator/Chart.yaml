@@ -1,0 +1,16 @@
+apiVersion: v2
+name: static-operator
+description: A Kubernetes operator for managing static HTTP mock services
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - operator
+  - mock
+  - http
+  - testing
+home: https://github.com/antonjah/static
+sources:
+  - https://github.com/antonjah/static
+maintainers:
+  - name: antonjah

@@ -1,0 +1,47 @@
+# Default values for static-operator
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Operator configuration
+operator:
+  name: static-operator
+  image:
+    registry: docker.io
+    repository: antonjah/static-operator
+    tag: latest
+    pullPolicy: IfNotPresent
+  
+  replicaCount: 1
+  
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  
+  # Leader election (set to true for HA setups with multiple replicas)
+  leaderElect: false
+  
+  # Metrics configuration
+  metricsPort: 8080
+
+# Service account configuration
+serviceAccount:
+  create: true
+  name: static-operator
+
+# Static service configuration
+static:
+  image:
+    registry: docker.io
+    repository: antonjah/static
+    tag: latest
+    pullPolicy: IfNotPresent
+  serviceAccount:
+    name: static-service
+
+# RBAC configuration
+rbac:
+  create: true

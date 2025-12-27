@@ -1,0 +1,133 @@
+---
+# ServiceAccount for the static operator controller
+# Manages Static CRD lifecycle and creates Deployments/Services
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: static-operator
+  namespace: static
+---
+# ServiceAccount for static service pods
+# Allows pods to watch StaticAPI CRDs directly from Kubernetes API
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: static-service
+  namespace: static
+---
+# Role for static-service to read StaticAPI resources in its namespace
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: static-service-role
+  namespace: static
+rules:
+- apiGroups:
+  - static.io
+  resources:
+  - staticapis
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: static-service-rolebinding
+  namespace: static
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: static-service-role
+subjects:
+- kind: ServiceAccount
+  name: static-service
+  namespace: static
+---
+# ClusterRole for the operator to manage all Static resources
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: static-operator-role
+rules:
+- apiGroups:
+  - static.io
+  resources:
+  - staticapis
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - static.io
+  resources:
+  - staticapis/status
+  verbs:
+  - get
+  - update
+  - patch
+- apiGroups:
+  - static.io
+  resources:
+  - statics
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - static.io
+  resources:
+  - statics/status
+  verbs:
+  - get
+  - update
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - services
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: static-operator-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: static-operator-role
+subjects:
+- kind: ServiceAccount
+  name: static-operator
+  namespace: static
