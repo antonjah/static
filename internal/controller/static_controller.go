@@ -102,6 +102,7 @@ func (r *StaticReconciler) reconcileDeployment(ctx context.Context, static *stat
 				Labels: labels,
 			},
 			Spec: corev1.PodSpec{
+				ServiceAccountName: StaticServiceAccount,
 				Containers: []corev1.Container{
 					{
 						Name:            "static",
