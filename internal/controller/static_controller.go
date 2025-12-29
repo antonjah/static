@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -71,6 +72,12 @@ func (r *StaticReconciler) reconcileDeployment(ctx context.Context, static *stat
 		image = static.Spec.Image
 	}
 
+	// Set imagePullPolicy based on tag
+	imagePullPolicy := corev1.PullIfNotPresent
+	if strings.HasSuffix(image, ":latest") || !strings.Contains(image, ":") {
+		imagePullPolicy = corev1.PullAlways
+	}
+
 	logLevel := "info"
 	if static.Spec.LogLevel != "" {
 		logLevel = static.Spec.LogLevel
@@ -107,7 +114,7 @@ func (r *StaticReconciler) reconcileDeployment(ctx context.Context, static *stat
 					{
 						Name:            "static",
 						Image:           image,
-						ImagePullPolicy: corev1.PullIfNotPresent,
+						ImagePullPolicy: imagePullPolicy,
 						Ports: []corev1.ContainerPort{
 							{
 								Name:          "http",
