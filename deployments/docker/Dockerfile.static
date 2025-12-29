@@ -1,0 +1,19 @@
+FROM golang:1.25-alpine AS builder
+
+WORKDIR /build
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+RUN CGO_ENABLED=0 go build -ldflags="-w -s" -o static ./cmd/static
+
+FROM scratch
+WORKDIR /app
+COPY --from=builder /build/static .
+
+ENV HOSTNAME=0.0.0.0
+ENV PORT=8080
+ENV STATICAPIS_PATH=/config
+
+EXPOSE 8080
+CMD ["./static"]

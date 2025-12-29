@@ -14,3 +14,5 @@
 # IDEs
 .idea
 .vscode
+
+bin/*

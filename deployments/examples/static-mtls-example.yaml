@@ -1,0 +1,13 @@
+apiVersion: static.io/v1alpha1
+kind: Static
+metadata:
+  name: static-mtls
+  namespace: static
+spec:
+  replicas: 1
+  image: antonjah/static:latest
+  logLevel: debug
+  tls:
+    enabled: true
+    secretName: static-mtls
+    verifyClient: true

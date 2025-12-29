@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.operator.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.operator.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.operator.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.operator.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.operator.name }}
+        app.kubernetes.io/name: {{ .Values.operator.name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- end }}
+      containers:
+      - name: operator
+        image: "{{ .Values.operator.image.registry }}/{{ .Values.operator.image.repository }}:{{ .Values.operator.image.tag }}"
+        imagePullPolicy: {{ .Values.operator.image.pullPolicy }}
+        args:
+        - --leader-elect={{ .Values.operator.leaderElect }}
+        ports:
+        - name: metrics
+          containerPort: {{ .Values.operator.metricsPort }}
+          protocol: TCP
+        resources:
+          {{- toYaml .Values.operator.resources | nindent 10 }}

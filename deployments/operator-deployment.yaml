@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: static-operator
+  namespace: static
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: static-operator
+  template:
+    metadata:
+      labels:
+        app: static-operator
+    spec:
+      serviceAccountName: static-operator
+      containers:
+      - name: operator
+        image: antonjah/static-operator:latest
+        imagePullPolicy: IfNotPresent
+        args:
+        - --leader-elect=false
+        ports:
+        - name: metrics
+          containerPort: 8080
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi

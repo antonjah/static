@@ -1,0 +1,16 @@
+apiVersion: static.io/v1alpha1
+kind: Static
+metadata:
+  name: static
+  namespace: static
+spec:
+  replicas: 1
+  image: antonjah/static:latest
+  logLevel: info
+  resources:
+    limits:
+      cpu: 200m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi

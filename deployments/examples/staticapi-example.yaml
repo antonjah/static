@@ -1,0 +1,13 @@
+apiVersion: static.io/v1alpha1
+kind: StaticAPI
+metadata:
+  name: example-api
+  namespace: static
+spec:
+  path: /api/v1/info
+  methods:
+  - method: GET
+    statusCode: 200
+    body: '{"a": "b"}'
+    headers:
+      content-type: "application/json"

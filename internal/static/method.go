@@ -1,11 +1,7 @@
 package static
 
-import (
-	"github.com/rs/zerolog"
-)
-
-// Method for a specific endpoint
-type Method struct {
+// MethodConfig for a specific endpoint
+type MethodConfig struct {
 	Method     string            `yaml:"method"`
 	StatusCode int               `yaml:"status-code"`
 	Body       string            `yaml:"body"`
@@ -14,10 +10,3 @@ type Method struct {
 
 // SupportedMethods lists the supported methods for a given Endpoint
 type SupportedMethods []string
-
-// MarshalZerologArray implements zerolog.LogArrayMarshaler
-func (s SupportedMethods) MarshalZerologArray(a *zerolog.Array) {
-	for _, method := range s {
-		a.Str(method)
-	}
-}
