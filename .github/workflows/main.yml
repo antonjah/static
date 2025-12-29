@@ -64,3 +64,40 @@ jobs:
           labels: ${{ steps.meta-static.outputs.labels }}
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/static:latest
           cache-to: type=inline
+      
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract version
+        id: version
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+            echo "has_version=true" >> $GITHUB_OUTPUT
+          else
+            echo "version=latest" >> $GITHUB_OUTPUT
+            echo "has_version=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: 'latest'
+      
+      - name: Package and push Helm chart
+        run: |
+          cd deployments/helm
+          helm package static-operator
+          
+          # Push the packaged chart to OCI registry
+          if [[ "${{ steps.version.outputs.has_version }}" == "true" ]]; then
+            # Push with version tag
+            helm push static-operator-*.tgz oci://ghcr.io/${{ github.repository_owner }}
+          else
+            # Push as latest (on main branch)
+            helm push static-operator-*.tgz oci://ghcr.io/${{ github.repository_owner }}
+          fi

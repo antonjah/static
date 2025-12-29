@@ -6,20 +6,24 @@ A lightweight HTTP mock service with Kubernetes operator for dynamic endpoint co
 
 ### Kubernetes
 
-The operator and static service images are automatically published to Docker Hub and will be pulled automatically during installation.
+The operator and static service images are automatically published to Docker Hub and will be pulled automatically during installation. The Helm chart is published to GitHub Container Registry (OCI).
 
-Install the operator using Helm:
+Install the operator using Helm (from OCI registry):
 
 ```bash
-helm install static-operator ./deployments/helm/static-operator
+helm install static-operator oci://ghcr.io/antonjah/static-operator
 ```
 
 Or install a specific version:
 
 ```bash
-helm install static-operator ./deployments/helm/static-operator \
-  --set operator.image.tag=v1.0.0 \
-  --set static.image.tag=v1.0.0
+helm install static-operator oci://ghcr.io/antonjah/static-operator --version 2.1.0
+```
+
+Or install from local chart:
+
+```bash
+helm install static-operator ./deployments/helm/static-operator
 ```
 
 Deploy the static service:
