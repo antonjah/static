@@ -2,8 +2,8 @@ apiVersion: v2
 name: static-operator
 description: A Kubernetes operator for managing static HTTP mock services
 type: application
-version: 2.1.2
-appVersion: "2.1.2"
+version: 2.1.3
+appVersion: "2.1.3"
 keywords:
   - operator
   - mock
