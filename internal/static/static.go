@@ -37,6 +37,7 @@ type Server struct {
 	k8sClient      client.Client
 	namespace      string
 	lastConfigHash string // Track configuration changes
+	endpoints      []StaticAPI // Track configured endpoints for info endpoint
 }
 
 // New creates a new Server instance with the given configuration.
@@ -103,6 +104,7 @@ func (s *Server) loadStaticAPIsFromK8s(ctx context.Context) error {
 	defer s.mu.Unlock()
 
 	s.mux = http.NewServeMux()
+	s.endpoints = []StaticAPI{} // Reset endpoints
 
 	for _, staticAPIObj := range staticAPIList.Items {
 		staticAPI := convertToStaticAPI(staticAPIObj)
@@ -120,7 +122,11 @@ func (s *Server) loadStaticAPIsFromK8s(ctx context.Context) error {
 			zap.String("path", staticAPI.Path),
 			zap.Any("methods", staticAPI.SupportedMethods))
 		s.mux.Handle(staticAPI.Path, requestLogger(&staticAPI))
+		s.endpoints = append(s.endpoints, staticAPI)
 	}
+
+	// Register info endpoint
+	s.mux.HandleFunc("/_static/info", s.handleInfo)
 
 	s.lastConfigHash = configHash
 	zap.L().Info("configuration loaded from Kubernetes", zap.Int("apis", len(staticAPIList.Items)))
@@ -173,6 +179,7 @@ func (s *Server) loadStaticAPIsFromFile() error {
 	defer s.mu.Unlock()
 
 	s.mux = http.NewServeMux()
+	s.endpoints = []StaticAPI{} // Reset endpoints
 
 	for _, staticAPI := range staticAPIs.StaticAPIs {
 		if err = staticAPI.Validate(); err != nil {
@@ -183,7 +190,11 @@ func (s *Server) loadStaticAPIsFromFile() error {
 		staticAPI.SetSupported()
 		zap.L().Debug("loaded path", zap.String("path", staticAPI.Path), zap.Any("methods", staticAPI.SupportedMethods))
 		s.mux.Handle(staticAPI.Path, requestLogger(&staticAPI))
+		s.endpoints = append(s.endpoints, staticAPI)
 	}
+
+	// Register info endpoint
+	s.mux.HandleFunc("/_static/info", s.handleInfo)
 
 	zap.L().Info("configuration reloaded from file")
 	return nil
