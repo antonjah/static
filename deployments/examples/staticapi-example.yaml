@@ -1,13 +1,12 @@
 apiVersion: static.io/v1alpha1
 kind: StaticAPI
 metadata:
-  name: example-api
-  namespace: static
+  name: ping
 spec:
-  path: /api/v1/info
+  path: /ping
   methods:
   - method: GET
     statusCode: 200
-    body: '{"a": "b"}'
+    body: 'pong'
     headers:
-      content-type: "application/json"
+      content-type: "text/plain"
